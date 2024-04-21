@@ -20,7 +20,7 @@
     "start2": "node NODE_OPTIONS=--openssl-legacy-provider index.js",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "prod": "NODE_ENV=production nodemon server.js"
+    "prod": "NODE_ENV=production node index.js"
   },
   "keywords": [],
   "author": "",
