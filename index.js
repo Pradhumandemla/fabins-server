@@ -50,10 +50,6 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-app.get('/ip', (req, res) => {
-  const ipAddress = req.ip;
-  res.send(`Your IP address is: ${ipAddress}`);
-});
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken, upload.array("picture",10), createPost);
@@ -65,8 +61,7 @@ app.use("/posts", postRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 3001;
-// mongoose.set('strictQuery', true);
-app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+mongoose.set('strictQuery', true);
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser:true, 
@@ -82,3 +77,5 @@ mongoose
   .catch((error) => {
     console.log(`${error} did not connect`);
   });
+app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
+
