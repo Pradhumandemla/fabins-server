@@ -50,7 +50,10 @@ const storage = multer.diskStorage({
   },
 });
 const upload = multer({ storage });
-
+app.get('/ip', (req, res) => {
+  const ipAddress = req.ip;
+  res.send(`Your IP address is: ${ipAddress}`);
+});
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken, upload.array("picture",10), createPost);
@@ -76,10 +79,5 @@ mongoose
     // Post.insertMany(posts);
   })
   .catch((error) => {
-    const parseIp = (req) =>
-    req.headers['x-forwarded-for']?.split(',').shift()
-    || req.socket?.remoteAddress;
-
-    console.log(parseIp(req));
     console.log(`${error} did not connect`);
   });
