@@ -65,12 +65,12 @@ app.use("/posts", postRoutes);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 3001;
-mongoose.set('strictQuery', true);
+// mongoose.set('strictQuery', true);
 app.listen(PORT, () => console.log(`Server Port: ${PORT}`));
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser:true, 
-    useUnifiedTopology:true
+    useUnifiedTopology:true,
   })
   .then(() => {
     console.log('db connection established');
