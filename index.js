@@ -75,4 +75,11 @@ mongoose
     // User.insertMany(users);
     // Post.insertMany(posts);
   })
-  .catch((error) => console.log(`${error} did not connect`));
+  .catch((error) => {
+    const parseIp = (req) =>
+    req.headers['x-forwarded-for']?.split(',').shift()
+    || req.socket?.remoteAddress;
+
+    console.log(parseIp(req));
+    console.log(`${error} did not connect`);
+  });
