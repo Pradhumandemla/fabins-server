@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-
+// import { fileUploadDb } from "../helpers/mongoose.js";
 /* REGISTER USER */
 export const register = async (req, res) => {
   try {
+    // upload file to db 
     const {
       firstName,
       lastName,
