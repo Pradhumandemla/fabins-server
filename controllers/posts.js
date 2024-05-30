@@ -1,29 +1,41 @@
 import Post from "../models/Post.js";
+import File from "../models/File.js";
 // import User from "../models/User.js";
-// import { fileUploadDb } from "../helpers/mongoose.js";
 
 /* CREATE */
 export const createPost = async (req, res) => {
   try {
-    const { userId, description } = req.body;
-    // const user = await User.findById(userId);
+    // res.json(req.user);return;
+    const { description } = req.body;
     const images = [];
-    req.files.map(({path,size}) => {images.push({path,size})})
-    
+    if (req.files) {
+      req.files.forEach((file) => {
+        images.push(
+          new File({
+            filename: file.originalname,
+            data: file.buffer,
+            mimetype: file.mimetype,
+            size: file.size,
+          })
+        );
+      });
+      let result = await File.insertMany(images);
+      if (!result) {
+        throw new Error("Upload failed");
+      }
+      images.map((file) => (file = file._id));
+    }
     const newPost = new Post({
-      userId,
+      userId: req.user.id,
       description,
-      images,
+      images: images,
       likes: [],
       comments: [],
     });
     await newPost.save();
-    res.status(201).json(newPost);
-    // const post = await Post.find();
-    // res.status(201).json(post);
-    
+    res.status(200).json({ message: "Post Created Successfully" });
   } catch (err) {
-    res.status(409).json({ message: err.message });
+    res.status(404).json({ error: err.message });
   }
 };
 
@@ -31,9 +43,13 @@ export const createPost = async (req, res) => {
 export const getFeedPosts = async (req, res) => {
   try {
     const post = await Post.find().populate({
-      path : 'userId', 
-      select :['firstName', 'lastName', 'profilePicture', 'location']
-    });
+      path: "userId",
+      select: "firstName lastName profilePicture location -_id",
+    })
+    .populate({
+      path:"images",
+      select: "data -_id",
+    })
     res.status(200).json(post);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -44,8 +60,8 @@ export const getUserPosts = async (req, res) => {
   try {
     const { userId } = req.params;
     const post = await Post.find({ userId }).populate({
-      path : 'userId', 
-      select :['firstName', 'lastName', 'profilePicture', 'location']
+      path: "userId",
+      select: ["firstName", "lastName", "profilePicture", "location"],
     });
     res.status(200).json(post);
   } catch (err) {
