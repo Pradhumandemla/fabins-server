@@ -45,7 +45,24 @@ app.get("/download/:fileId", async (req, res) => {
   //       res.send(file.data);
   //   });
 });
+app.get("/img/:id", async (req , res) => {
+  if(req.params.id == '1'){
+    return res.json({
+      status : 200,
+      message : 'Data exits',
+      data :{
+        picId:"1",
+        picName:"abcd.jpg",
+        picS3URl:"http://dummy.com/abcd.jpg",
+      }
+    });
+  }
+  return res.json({
+    status : 200,
+    message : 'Data does not exits',})
 
+
+})
 // app.get('/download/:filename', (req, res) => {
 //   let files  =  gfs.files.findOne({ filename: req.params.filename });
 //   res.send(files);

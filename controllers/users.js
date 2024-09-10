@@ -7,7 +7,8 @@ export const getUser = async (req, res) => {
     const user = await User.findById(id);
     res.status(200).json(user);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    console.error(error);
+    res.status(500).send('Server error');
   }
 };
 
@@ -26,7 +27,8 @@ export const getUserFriends = async (req, res) => {
     );
     res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    console.error(error);
+    res.status(500).send('Server error');
   }
 };
 
@@ -58,6 +60,27 @@ export const addRemoveFriend = async (req, res) => {
 
     res.status(200).json(formattedFriends);
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true, runValidators: true } 
+    );
+    if (!updatedUser) {
+      return res.status(404).send('User not found');
+    }
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
   }
 };
